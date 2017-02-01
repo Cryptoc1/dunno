@@ -1,0 +1,109 @@
+html {
+    font-size: 1.2em;
+}
+
+html, body {
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    font-size: 12pt;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+    transition: all .4s;
+}
+
+body {
+    background-color: #EFEBE9;
+    color: #363636;
+}
+
+body.nighttime {
+    background-color: #363636;
+    color: #EFEBE9;
+}
+
+body.nighttime preview-area {
+    background-color: #363636;
+}
+
+
+/* help box doesn't need to change font color */
+
+body.nighttime help-box#help-box {
+    color: #363636;
+}
+
+::selection {
+    background: rgba(3, 169, 244, .45);
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.master-view {
+    width: 100%;
+    height: 100%;
+}
+
+text-area#editor {
+    font-family: 'Cutive Mono', sans-serif;
+    font-weight: 700;
+    width: 60%;
+    height: 100%;
+    margin: 0 auto;
+    margin-top: 3%;
+    padding: 40px;
+    word-wrap: break-word;
+    outline: none;
+    border: none;
+    display: block;
+    transition: all .4s;
+    white-space: normal;
+}
+
+button#help-btn {
+    position: absolute;
+    top: 10pt;
+    right: 10pt;
+    outline: none;
+    border: none;
+    border-radius: 50%;
+    font-weight: 700;
+    opacity: .35;
+    cursor: pointer;
+}
+
+help-box#help-box {
+    background-color: buttonface;
+    position: absolute;
+    min-width: 200px;
+    max-width: 400px;
+    padding: 16pt;
+    opacity: 1;
+    transition: all .4s;
+    border-radius: 2px;
+}
+
+help-box#help-box #exit {
+    float: right;
+    cursor: pointer;
+}
+
+preview-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 90%;
+    min-height: 100%;
+    font-family: Georgia;
+    overflow-y: scroll;
+    background-color: #EFEBE9;
+    padding: 2% 5%;
+    opacity: 1;
+    transition: all .45s;
+}
