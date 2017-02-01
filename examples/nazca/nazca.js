@@ -16,7 +16,7 @@
       this.createPreviewArea()
 
       this.on('sunset-loaded', () => {
-        // self.toggleNightTime()
+        self.toggleNightTime()
       })
       this.loadSunset()
 
