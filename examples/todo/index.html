@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+
+<head></head>
+
+<body>
+    <dunno>
+
+        <!-- Dunno src -->
+        <script src="../../src/events.js"></script>
+        <script src="../../src/storage-context.js"></script>
+        <script src="../../src/master-view.js"></script>
+        <script src="../../src/application.js"></script>
+
+        <script src="todo.js"></script>
+        <script>
+            var app = window.app = new TodoApp()
+
+            window.onload = () => {
+                app.render()
+            }
+        </script>
+    </dunno>
+</body>
+
+</html>

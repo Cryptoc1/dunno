@@ -20,10 +20,20 @@
       })
       this.loadSunset()
 
-      // create a keydown listener to handle app keyboard shortcuts
-      // @TODO: make event for Application class to handle keyboard shortcuts
-      window.addEventListener('keydown', (e) => {
-        self.keydown(e)
+      this.on('ctrl+shift+h', (e) => {
+        self.helpBox.toggle()
+      })
+
+      this.on('ctrl+alt+n', (e) => {
+        self.toggleNightTime()
+      })
+
+      this.on('ctrl+alt+p', (e) => {
+        self.preview.toggle()
+      })
+
+      this.on('ctrl+o', (e) => {
+        // self.open()
       })
     }
 
@@ -66,36 +76,6 @@
       return 'Hello world!'
     }
 
-    keydown (e) {
-      switch (e.keyCode) {
-        case 68:
-          // download
-          break
-        case 72:
-          if (e.ctrlKey && e.shiftKey) {
-            e.preventDefault()
-            this.helpBox.toggle()
-          }
-          break
-        case 78:
-          if (e.ctrlKey && e.altKey) {
-            e.preventDefault()
-            this.toggleNightTime()
-          }
-          break
-        case 79:
-          // open file
-          break
-        case 80:
-          // preview markdown
-          if (e.ctrlKey && e.altKey) {
-            e.preventDefault()
-            this.preview.toggle()
-          }
-          break
-      }
-    }
-
     loadSunset () {
       var self = this
       if (navigator.geolocation) {
@@ -125,8 +105,6 @@
       super.render()
 
       this.textArea.focus()
-
-      if (this.store.get('auto-nightmode') && this.isNightTime) this.toggleNightTime()
     }
 
     textChanged (e) {
@@ -159,6 +137,25 @@
       this._textContent = ''
       this.addEventListener('keydown', this.keydown)
       this.addEventListener('keyup', this.keyup)
+
+      this.innerHTML = `# Welcome to Nazca Writer
+      <div><br></div>
+        <div>Hello, and welcome to Nazca Writer, an online clone of iA Writer (Copy. [**Information Architects Inc.**](http://ia.net))!</div>
+        <div>
+            <div></div>
+            <div>There are a lot of shortcuts and other features to help you work faster, for example, to view this Markdown file as live HTML, press *CTRL + ALT + P* (You may have to press it twice the first time, it's still a little buggy). A list of all commands for features like downloading and opening files can found in the Help dialog. Accessing the Help dialog is as simple as clicking the question mark in the top-right corner of the screen, or using the key combination *CTRL + SHIFT + H*.
+                <br>
+                <br>Nazca Writer as allows basic editing features found in most text editors using their corresponding system key combination, such as *CTRL + V* to paste in Windows or Chrome OS, and *CMD + V* in Mac OS.
+                <br>
+                <br>One last bit of information I should touch on is Night Mode, which changes the Ui to make it easy to edit documents in darker settings. Night Mode can be toggled using the key combination *CTRL + ALT + N*.
+                <br>
+                <br>
+                <br>Enjoy!
+                <br>
+                <br>-- Samuel Steele (cryptoc1)
+                <br>
+            </div>
+        </div>`
     }
 
     keydown (e) {
@@ -189,7 +186,10 @@
     }
 
     get value () {
-      return this.innerHTML
+      var text = this.innerHTML.replace(/<div><br><\/div>/g, '\n')
+      text = text.replace(/(<div>)/g, '\n')
+      text = text.replace(/(<\/div>)/g, '')
+      return text
     }
   }
 
@@ -224,10 +224,13 @@
     }
 
     show () {
+      var self = this
       this.classList.remove('hidden')
       this.style.top = ((window.innerHeight / 2) - (this.offsetHeight / 2)) + 'px'
       this.style.left = ((window.innerWidth / 2) - (this.offsetWidth / 2)) + 'px'
-      this.style.opacity = 1
+      setTimeout(() => {
+        self.style.opacity = 1
+      }, 0)
     }
 
     toggle () {
@@ -256,22 +259,25 @@
     }
 
     set content (value) {
-      value = value.replace(/<div><br><\/div>/g, '\n')
-      value = value.replace(/(<div>)/g, '\n')
-      value = value.replace(/(<\/div>)/g, '')
       this.innerHTML = marked(value)
     }
 
     hide () {
+      var self = this
       this.content = ''
       this.style.opacity = 0
-      this.classList.add('hidden')
+      setTimeout(() => {
+        self.classList.add('hidden')
+      }, 0)
     }
 
     show () {
+      var self = this
       this.content = this.elem.value
       this.classList.remove('hidden')
-      this.style.opacity = 1
+      setTimeout(() => {
+        self.style.opacity = 1
+      }, 0)
     }
 
     toggle () {

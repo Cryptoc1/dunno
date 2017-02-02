@@ -53,6 +53,7 @@ body.nighttime help-box#help-box {
 text-area#editor {
     font-family: 'Cutive Mono', sans-serif;
     font-weight: 700;
+    font-size: 14pt;
     width: 60%;
     height: 100%;
     margin: 0 auto;
@@ -62,7 +63,6 @@ text-area#editor {
     outline: none;
     border: none;
     display: block;
-    transition: all .4s;
     white-space: normal;
 }
 
@@ -85,7 +85,7 @@ help-box#help-box {
     max-width: 400px;
     padding: 16pt;
     opacity: 1;
-    transition: all .4s;
+    transition: all .45s;
     border-radius: 2px;
 }
 
@@ -104,6 +104,6 @@ preview-area {
     overflow-y: scroll;
     background-color: #EFEBE9;
     padding: 2% 5%;
-    opacity: 1;
-    transition: all .45s;
+    opacity: 0;
+    transition: opacity .35s;
 }
