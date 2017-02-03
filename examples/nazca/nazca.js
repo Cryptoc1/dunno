@@ -37,6 +37,17 @@
       })
     }
 
+    close (e) {
+      super.close(e)
+
+      if (this.textArea.value.trim().length > 0) {
+        this.store.set('editor-content', this.textArea.value)
+      }
+
+    // return a value to block the window from being unloaded
+    // return true
+    }
+
     createHelpBox () {
       var self = this
 
@@ -63,17 +74,23 @@
     }
 
     createTextArea () {
+      var self = this
+
       // TextArea is a sub-class (custom element) of HTMLDivElement, we're using a constructor to create the element
       var t = this.textArea = new TextArea()
       t.id = 'editor'
       t.className = 'editor'
+
+      this.store.get('editor-content', (err, value) => {
+        t.value = value || self.defaultText
+      })
 
       // append to the master view
       this.view.appendChild(t)
     }
 
     get defaultText () {
-      return 'Hello world!'
+      return `# Welcome to Nazca Writer\nHello, and welcome to Nazca Writer, an online clone of iA Writer (Copy. [**Information Architects Inc.**](http://ia.net))!\nThere are a lot of shortcuts and other features to help you work faster, for example, to view this Markdown file as live HTML, press *CTRL + ALT + P* (You may have to press it twice the first time, it's still a little buggy). A list of all commands for features like downloading and opening files can found in the Help dialog. Accessing the Help dialog is as simple as clicking the question mark in the top-right corner of the screen, or using the key combination *CTRL + SHIFT + H*. Nazca Writer as allows basic editing features found in most text editors using their corresponding system key combination, such as *CTRL + V* to paste in Windows or Chrome OS, and *CMD + V* in Mac OS. One last bit of information I should touch on is Night Mode, which changes the Ui to make it easy to edit documents in darker settings. Night Mode can be toggled using the key combination *CTRL + ALT + N*.\nEnjoy!\n\n-- Samuel Steele (cryptoc1)`
     }
 
     loadSunset () {
@@ -107,10 +124,6 @@
       this.textArea.focus()
     }
 
-    textChanged (e) {
-      console.log(e.target.textContent)
-    }
-
     toggleNightTime () {
       if (document.body.className.includes('nighttime')) {
         document.body.classList.remove('nighttime')
@@ -137,25 +150,6 @@
       this._textContent = ''
       this.addEventListener('keydown', this.keydown)
       this.addEventListener('keyup', this.keyup)
-
-      this.innerHTML = `# Welcome to Nazca Writer
-      <div><br></div>
-        <div>Hello, and welcome to Nazca Writer, an online clone of iA Writer (Copy. [**Information Architects Inc.**](http://ia.net))!</div>
-        <div>
-            <div></div>
-            <div>There are a lot of shortcuts and other features to help you work faster, for example, to view this Markdown file as live HTML, press *CTRL + ALT + P* (You may have to press it twice the first time, it's still a little buggy). A list of all commands for features like downloading and opening files can found in the Help dialog. Accessing the Help dialog is as simple as clicking the question mark in the top-right corner of the screen, or using the key combination *CTRL + SHIFT + H*.
-                <br>
-                <br>Nazca Writer as allows basic editing features found in most text editors using their corresponding system key combination, such as *CTRL + V* to paste in Windows or Chrome OS, and *CMD + V* in Mac OS.
-                <br>
-                <br>One last bit of information I should touch on is Night Mode, which changes the Ui to make it easy to edit documents in darker settings. Night Mode can be toggled using the key combination *CTRL + ALT + N*.
-                <br>
-                <br>
-                <br>Enjoy!
-                <br>
-                <br>-- Samuel Steele (cryptoc1)
-                <br>
-            </div>
-        </div>`
     }
 
     keydown (e) {
@@ -189,7 +183,13 @@
       var text = this.innerHTML.replace(/<div><br><\/div>/g, '\n')
       text = text.replace(/(<div>)/g, '\n')
       text = text.replace(/(<\/div>)/g, '')
-      return text
+      text = text.replace(/(<br>)/g, '\n')
+      return text.trim()
+    }
+
+    set value (value) {
+      var html = value.trim().replace(/\n/g, '<div><br></div>')
+      this.innerHTML = html
     }
   }
 

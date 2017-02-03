@@ -6,6 +6,7 @@ html, body {
     font-family: 'Lato', sans-serif;
     font-weight: 400;
     font-size: 12pt;
+    -webkit-font-smoothing: antialiased;
     margin: 0;
     padding: 0;
     outline: none;
@@ -27,6 +28,14 @@ body.nighttime {
 
 body.nighttime preview-area {
     background-color: #363636;
+}
+
+body preview-area a {
+    color: #3F51B5;
+}
+
+body.nighttime preview-area a {
+    color: #1976D2;
 }
 
 
@@ -98,12 +107,12 @@ preview-area {
     position: absolute;
     top: 0;
     left: 0;
-    width: 90%;
+    width: 84%;
     min-height: 100%;
-    font-family: Georgia;
+    font-family: 'Noto Serif', Georgia, sans-serif;
     overflow-y: scroll;
     background-color: #EFEBE9;
-    padding: 2% 5%;
+    padding: 4% 8%;
     opacity: 0;
     transition: opacity .35s;
 }

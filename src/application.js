@@ -1,21 +1,27 @@
-;
-((dunno, undefined) => {
+;((dunno, undefined) => {
 
   class Application extends EventEmitter {
-    constructor() {
+    constructor () {
       super()
+
+      this.settings = new SettingsContext('dunno.app', this.name)
 
       this.store = new StorageContext({
         prefix: 'dunno.app',
-        name: this.constructor.name,
+        name: this.name,
         store: 'IndexedDB'
       })
+
       this.view = new Dunno.MasterView()
 
       this.init()
     }
 
-    init() {
+    close (e) {
+      this.emit('close')
+    }
+
+    init () {
       var self = this
 
       document.body.querySelectorAll('dunno').forEach((el) => {
@@ -42,9 +48,14 @@
       window.addEventListener('keydown', (e) => {
         self.onKeydown(e)
       })
+
+      window.addEventListener('beforeunload', (e) => {
+        var r = self.close(e)
+        if (r) return e.returnValue = true
+      })
     }
 
-    onKeydown(e) {
+    onKeydown (e) {
       var keys = []
       if (e.ctrlKey) keys.push('ctrl')
       if (e.shiftKey) keys.push('shift')
@@ -54,18 +65,22 @@
       this.emit(keys.join('+'), e)
     }
 
-    render() {
+    get name () {
+      return this.constructor.name
+    }
+
+    render () {
       document.body.appendChild(this.view)
       this.view.focus()
 
       this.emit('rendered')
     }
 
-    get title() {
+    get title () {
       return this._title.text
     }
 
-    set title(value) {
+    set title (value) {
       this._title.text = value
     }
   }

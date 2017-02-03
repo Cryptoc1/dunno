@@ -16,17 +16,21 @@
           this.store = new LocalStore()
           break
         default:
-          if (window.indexedDB) return this.store = new IndexStore()
-          if (window.localStorage) return this.store = new LocalStore()
-          throw new Error('No supported stores were found on this system')
+          if (window.indexedDB) this.store = new IndexStore()
+          else if (window.localStorage) this.store = new LocalStore()
+          else throw new Error('No supported stores were found on this system')
       }
     }
 
     clear (callback) {
+      if (!callback) callback = () => {
+      }
       this.store.clear(callback)
     }
 
     get (key, callback) {
+      if (!callback) callback = () => {
+      }
       this.store.get(this.keyize(key), (err, value) => {
         if (err) return callback(err)
         callback(null, JSON.parse(value))
@@ -43,6 +47,8 @@
     }
 
     set (key, value, callback) {
+      if (!callback) callback = () => {
+      }
       this.store.set(this.keyize(key), JSON.stringify(value), callback)
     }
   }
@@ -88,6 +94,9 @@
     get (key, callback) {
       var self = this
 
+      if (!callback) callback = () => {
+      }
+
       this.open((err, db) => {
         if (err) return callback(err)
 
@@ -100,12 +109,16 @@
         }
 
         request.onsuccess = (e) => {
-          callback(null, e.target.result.value)
+          var value = (e.target.result) ? e.target.result.value : null
+          callback(null, value)
         }
       })
     }
 
     open (callback) {
+      if (!callback) callback = () => {
+      }
+
       var request = indexedDB.open(this.dbName, 2)
 
       request.onerror = (e) => {
@@ -128,6 +141,9 @@
     }
 
     set (key, value, callback) {
+      if (!callback) callback = () => {
+      }
+
       var self = this
 
       this.open((err, db) => {
@@ -191,12 +207,18 @@
     }
 
     get (key, callback) {
+      if (!callback) callback = () => {
+      }
+
       setTimeout(() => {
         return callback(st.getItem(key))
       }, 0)
     }
 
     set (key, value, callback) {
+      if (!callback) callback = () => {
+      }
+
       setTimeout(() => {
         st.setItem(key, value)
         return callback()
