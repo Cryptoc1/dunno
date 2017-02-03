@@ -10,8 +10,8 @@
 
       this.createHelpBox()
 
-      this.createTextArea()
-      // this.textArea.addEventListener('change', this.textChanged)
+      this.createEditor()
+      // this.editor.addEventListener('change', this.textChanged)
 
       this.createPreviewArea()
 
@@ -40,8 +40,8 @@
     close (e) {
       super.close(e)
 
-      if (this.textArea.value.trim().length > 0) {
-        this.store.set('editor-content', this.textArea.value)
+      if (this.editor.value.trim().length > 0) {
+        this.store.set('editor-content', this.editor.value)
       }
 
     // return a value to block the window from being unloaded
@@ -69,15 +69,15 @@
 
     createPreviewArea () {
       var p = this.preview = new PreviewArea()
-      p.attach(this.textArea)
+      p.attach(this.editor)
       this.view.appendChild(p)
     }
 
-    createTextArea () {
+    createEditor () {
       var self = this
 
-      // TextArea is a sub-class (custom element) of HTMLDivElement, we're using a constructor to create the element
-      var t = this.textArea = new TextArea()
+      // Editor is a sub-class (custom element) of HTMLDivElement, we're using a constructor to create the element
+      var t = this.editor = new Editor()
       t.id = 'editor'
       t.className = 'editor'
 
@@ -90,7 +90,12 @@
     }
 
     get defaultText () {
-      return `# Welcome to Nazca Writer\nHello, and welcome to Nazca Writer, an online clone of iA Writer (Copy. [**Information Architects Inc.**](http://ia.net))!\nThere are a lot of shortcuts and other features to help you work faster, for example, to view this Markdown file as live HTML, press *CTRL + ALT + P* (You may have to press it twice the first time, it's still a little buggy). A list of all commands for features like downloading and opening files can found in the Help dialog. Accessing the Help dialog is as simple as clicking the question mark in the top-right corner of the screen, or using the key combination *CTRL + SHIFT + H*. Nazca Writer as allows basic editing features found in most text editors using their corresponding system key combination, such as *CTRL + V* to paste in Windows or Chrome OS, and *CMD + V* in Mac OS. One last bit of information I should touch on is Night Mode, which changes the Ui to make it easy to edit documents in darker settings. Night Mode can be toggled using the key combination *CTRL + ALT + N*.\nEnjoy!\n\n-- Samuel Steele (cryptoc1)`
+      return `# Welcome to Nazca Writer
+Hello, and welcome to Nazca Writer, an online clone of iA Writer (Copy. [**Information Architects Inc.**](http://ia.net))!
+There are a lot of shortcuts and other features to help you work faster, for example, to view this Markdown file as live HTML, press *CTRL + ALT + P* (You may have to press it twice the first time, it's still a little buggy). A list of all commands for features like downloading and opening files can found in the Help dialog. Accessing the Help dialog is as simple as clicking the question mark in the top-right corner of the screen, or using the key combination *CTRL + SHIFT + H*. Nazca Writer as allows basic editing features found in most text editors using their corresponding system key combination, such as *CTRL + V* to paste in Windows or Chrome OS, and *CMD + V* in Mac OS. One last bit of information I should touch on is Night Mode, which changes the Ui to make it easy to edit documents in darker settings. Night Mode can be toggled using the key combination *CTRL + ALT + N*.
+Enjoy!
+
+-- Samuel Steele (cryptoc1)`
     }
 
     loadSunset () {
@@ -121,7 +126,7 @@
     render () {
       super.render()
 
-      this.textArea.focus()
+      this.editor.focus()
     }
 
     toggleNightTime () {
@@ -136,11 +141,11 @@
   window.Nazca = Nazca
 })()
 
-// TextArea
+// Editor
 
 ;((undefined) => {
 
-  class TextArea extends HTMLDivElement {
+  class Editor extends HTMLDivElement {
     createdCallback () {
       this.style.width = '600px'
       this.style.height = '200px'
@@ -193,12 +198,16 @@
     }
   }
 
-  window.TextArea = document.registerElement('text-area', TextArea)
+  window.Editor = document.registerElement('text-area', Editor)
 })()
 
 ;((undefined) => {
 
   class HelpBox extends HTMLDivElement {
+
+    constructor () {
+      super()
+    }
 
     createdCallback () {
       this.id = 'help-box'
@@ -248,6 +257,10 @@
 ;((undefined) => {
 
   class PreviewArea extends HTMLDivElement {
+    constructor () {
+      super()
+    }
+
     createdCallback () {
       this.id = 'preview'
       this.className = 'hidden'

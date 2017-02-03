@@ -25,16 +25,20 @@
     clear (callback) {
       if (!callback) callback = () => {
       }
-      this.store.clear(callback)
+      setTimeout(() => {
+        this.store.clear(callback)
+      }, 0)
     }
 
     get (key, callback) {
       if (!callback) callback = () => {
       }
-      this.store.get(this.keyize(key), (err, value) => {
-        if (err) return callback(err)
-        callback(null, JSON.parse(value))
-      })
+      setTimeout(() => {
+        this.store.get(this.keyize(key), (err, value) => {
+          if (err) return callback(err)
+          callback(null, JSON.parse(value))
+        })
+      }, 0)
     }
 
     // parse a storage key to the internal representation
@@ -49,7 +53,9 @@
     set (key, value, callback) {
       if (!callback) callback = () => {
       }
-      this.store.set(this.keyize(key), JSON.stringify(value), callback)
+      setTimeout(() => {
+        this.store.set(this.keyize(key), JSON.stringify(value), callback)
+      }, 0)
     }
   }
 
