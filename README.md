@@ -27,7 +27,7 @@ class TutorialApp extends Dunno.Application {
     })
   }
 
-  // The close method is called
+  // The close method is called when the page is being loaded, or the current app instance is explicitly being closed
   close() {
     super.close.apply(this, arguments)
 
