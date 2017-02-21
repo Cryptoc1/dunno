@@ -54,7 +54,7 @@ class TutorialApp extends Dunno.Application {
     // load the editor's contents from the store (this shouldn't actually be done in render though...)
     this.store.get('editor.content', (err, content) => {
       if (!err) {
-        self.editor.value = history
+        self.editor.value = content
         self.editor.focus()
       }
     })
@@ -76,6 +76,7 @@ In Dunno, "Views" are just ES6 Custom elements (classes that extend `HTMLElement
     }
 
     createdCallback() {
+      this.contentEditable = true
       this.value = "Hello World!"
     }
 
