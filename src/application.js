@@ -1,24 +1,31 @@
-;((dunno, undefined) => {
+;((undefined) => {
 
-  class Application extends EventEmitter {
+  class Application extends Dunno.Core.EventEmitter {
     constructor () {
       super()
 
-      this.settings = new SettingsContext('dunno.app', this.name)
+      this.settings = new Dunno.Core.SettingsContext('dunno.app', this.name)
 
-      this.store = new StorageContext({
+      this.store = new Dunno.Core.StorageContext({
         prefix: 'dunno.app',
         name: this.name,
         store: 'IndexedDB'
       })
 
-      this.view = new Dunno.MasterView()
+      this.view = new Dunno.UI.MasterView()
 
       this.init()
     }
 
+    async (task, callback = new Function()) {
+      var fn = (() => {
+        return callback(task())
+      }).bind(task)
+      return (window.setImmediate) ? window.setImmediate(fn) : window.setTimeout(fn, 0)
+    }
+
     close (e) {
-      this.emit('close')
+      this.emit('close', e)
     }
 
     init () {
@@ -45,14 +52,16 @@
       this._title = document.head.querySelector('title') || document.head.appendChild(document.createElement('title'))
       if (this.title === '') this.title = this.constructor.name
 
-      window.addEventListener('keydown', (e) => {
-        self.onKeydown(e)
-      })
+      this.bindEvents()
+    }
 
-      window.addEventListener('beforeunload', (e) => {
-        var r = self.close(e)
+    bindEvents () {
+      window.addEventListener('keydown', e => this.emit('keydown'))
+      window.addEventListener('beforeunload', e => {
+        var r = this.close(e)
         if (r) return e.returnValue = true
       })
+      window.addEventListener('beforeunload', e => this.emit('beforeunload', e))
     }
 
     onKeydown (e) {
@@ -85,7 +94,8 @@
     }
   }
 
-  dunno.Application = Application
+  Application.Models = {}
+  Application.UI = {}
 
-  window.Dunno = dunno
-})(window.Dunno || {})
+  window.Dunno.Application = Application
+})()

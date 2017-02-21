@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <dunno>
+        <!-- Dunno src -->
+        <script src="../../src/dunno.js"></script>
+        <!-- Dunno.Core -->
+        <script src="../../src/core/events.js"></script>
+        <script src="../../src/core/storage-context.js"></script>
+        <script src="../../src/core/settings-context.js"></script>
+        <script src="../../src/core/list.js"></script>
+        <script src="../../src/core/model.js"></script>
+
+        <script src="../../src/mixins.js"></script>
+
+        <!-- Dunno.UI -->
+        <script src="../../src/ui/base-view.js"></script>
+        <script src="../../src/ui/master-view.js"></script>
+        <script src="../../src/ui/region-view.js"></script>
+        <script src="../../src/ui/list-view.js"></script>
+        <script src="../../src/ui/text-view.js"></script>
+        <script src="../../src/application.js"></script>
+
+        <script src="notes.js"></script>
+        <script>
+            var app = window.app = new NoteApp()
+
+            window.onload = e => {
+                app.render()
+            }
+        </script>
+    </dunno>
+</body>
+
+</html>

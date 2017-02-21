@@ -1,4 +1,4 @@
-;((dunno, undefined) => {
+;((undefined) => {
 
   class MasterView extends HTMLDivElement {
     createdCallback () {
@@ -8,7 +8,5 @@
     }
   }
 
-  dunno.MasterView = document.registerElement('master-view', MasterView)
-
-  window.Dunno = dunno
-})(window.Dunno || {})
+  window.Dunno.UI.MasterView = document.registerElement('master-view', MasterView)
+})()
