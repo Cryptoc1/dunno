@@ -22,5 +22,5 @@ Where it all begins...
 + `beforeunload`
 + `close`
 + `keydown`
-+ `<KEY_SHORTCUT>` : A special event that allows binding to specific keyboard shortcuts (e.g. `myApp.on('ctrl+alt+p`, ...)`)
++ `<KEY_SHORTCUT>` : A special event that allows binding to specific keyboard shortcuts (e.g. `myApp.on('ctrl+alt+p, ...)`)
 + `rendered`
