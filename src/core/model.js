@@ -2,10 +2,10 @@
 
   Dunno.Core.IModel =
     class extends Dunno.Core.EventEmitter {
-      destroy () {
+      clone () {
         throw new Error('Not Implemented')
       }
-      clone () {
+      destroy () {
         throw new Error('Not Implemented')
       }
       get () {
