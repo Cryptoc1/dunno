@@ -5,6 +5,9 @@
       destroy () {
         throw new Error('Not Implemented')
       }
+      clone () {
+        throw new Error('Not Implemented')
+      }
       get () {
         throw new Error('Not Implemented')
       }
@@ -29,6 +32,10 @@
 
         this.attributes = attributes
         if (this.attributes.id) this.id = this.attributes.id
+      }
+
+      clone () {
+        return new Dunno.Core.Model(this.attributes)
       }
 
       get (attribute) {

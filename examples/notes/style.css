@@ -39,17 +39,21 @@ master-view {
     border-right: solid 1px rgba(103, 103, 103, .35);
 }
 
+#notes-region #actions #delete-btn {
+  float: right;
+}
+
 #notes-list {
     width: 100%;
     height: 94%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #notes-list notes-list-item {
     width: 88%;
     padding: 4% 6%;
     border-bottom: solid 1px rgba(103, 103, 103, .4);
-    transition: opacity .25s;
+    transition: opacity, background .25s;
 }
 
 #notes-list notes-list-item[selected="true"] {

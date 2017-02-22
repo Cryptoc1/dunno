@@ -65,8 +65,12 @@
         this.addEventListener('touchcancel', e => this.emit('touchcancel', e))
       }
 
-      connectedCallback() {
-        this.emit('connected')
+      connectedCallback (e) {
+        this.emit('connected', e)
+      }
+
+      disconnectedCallback (e) {
+        this.emit('disconnected', e)
       }
 
       initShadowDOM () {

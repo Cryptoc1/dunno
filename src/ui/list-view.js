@@ -8,8 +8,12 @@
       }
 
       add (item) {
+        var index = this.items.add(item)
+        item.on('disconnected', e => {
+          this.items.remove(this.items.indexOf(item))
+        })
         this.append(item)
-        return this.items.add(item)
+        return index
       }
 
       remove (index) {
@@ -18,6 +22,18 @@
         item.remove()
         this.items = this.items.filter((item, i) => i != index)
         this.emit('removed', item)
+      }
+
+      // marks the item at `index` as selected, returns that item (or undefined)
+      select (index) {
+        if (!index) index = 0
+        var item = this.items[index]
+        return item ? (item.select(), item) : undefined
+      }
+
+      get selected () {
+        var s = this.items.filter(child => child.selected)
+        return s[0]
       }
   }
 
@@ -36,21 +52,33 @@
         })
       }
 
+      remove (callback = function () {}) {
+        super.remove()
+        this.once('disconnected', e => {
+          return callback(e)
+        })
+      }
+
+      select () {
+        return this.emit('selected'), this.selected = true
+      }
+
       get selected () {
-        return this.getAttribute('selected')
+        return this.getAttribute('selected') === 'true'
       }
 
       set selected (value) {
-        this.setAttribute('selected', !!value)
+        var value = !!value
+        this.setAttribute('selected', value)
 
+        // unselect the other items
         if (this.parentNode instanceof Dunno.UI.ListView) {
-          for (var i = 0; i < this.parentNode.children.length; i++) {
-            var child = this.parentNode.children[i]
-            if (child != this && child instanceof Dunno.UI.ListItem) child.setAttribute('selected', false)
-          }
+          this.parentNode.items.each(item => {
+            if (item != this) item.setAttribute('selected', false)
+          })
         }
 
-        return !!value
+        return value ? (this.emit('selected'), value) : value
       }
   }
 

@@ -28,5 +28,9 @@
       item (index) {
         return this[index]
       }
+
+      remove (index) {
+        return this.splice(index, 1)
+      }
   }
 })()

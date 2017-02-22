@@ -30,10 +30,26 @@
         id: 'new-note',
         icon: 'plus'
       })
-
       newNoteAction.on('click', e => this.newNote())
-
       actionBar.add(newNoteAction)
+
+      var deleteAction = new NoteApp.UI.ActionItem({
+        id: 'delete-btn',
+        icon: 'trash'
+      })
+      deleteAction.on('click', e => {
+        var selected = this.notesList.selected
+        if (selected && selected.model) selected.model.destroy((err, res) => {
+            if (!err) {
+              this.editor.model = null
+              selected.once('disconnected', e => {
+                this.notesList.select(0)
+              })
+              selected.remove()
+            }
+          })
+      })
+      actionBar.add(deleteAction)
 
       this.notesRegion.append(actionBar)
     }
@@ -69,13 +85,6 @@
     }
 
     main () {
-      /*for (var i = 0; i < 26; i++) {
-        var item = new Dunno.UI.ListItem('item ' + i)
-        item.title = 'item ' + i
-        item.textContent = 'item ' + i
-        this.notesList.add(item)
-      }*/
-
       this.store.get('notes', (err, notes) => {
         if (!err) {
           if (!notes) notes = NoteApp.NOTES_STORE_LAYOUT
@@ -99,8 +108,9 @@
 
     newNote (model) {
       var item = new NoteApp.UI.NoteListItem({
-        title: (model && model.get('title')) || 'New Note',
-        model: model || new NoteApp.Models.Note({}, this.store)
+        model: model || new NoteApp.Models.Note({}, this.store),
+        selected: true,
+        title: (model && model.get('title')) || 'New Note'
       })
 
       // Bind the item's title to the note's title
@@ -108,21 +118,22 @@
         if (e.attribute == 'title') item.title = e.value
       })
 
-      item.on('connected', e => {
-        // fade-in, once the element is attached to the DOM
-        item.style.opacity = 1
-
-        item.selected = true
+      // When an item is selected, bind to the editor
+      item.on('selected', e => {
         this.editor.model = item.model
         this.editor.editable = true
         this.editor.focus()
       })
 
+      item.on('connected', e => {
+        // fade-in, once the element is attached to the DOM
+        item.style.opacity = 1
+
+        item.select()
+      })
+
       item.on('click', e => {
-        item.selected = true
-        this.editor.model = item.model
-        this.editor.editable = true
-        this.editor.focus()
+        item.select()
       })
 
       this.notesList.add(item)
@@ -158,7 +169,14 @@
       }
 
       set model (value) {
-        if (!(value instanceof Dunno.Core.IModel)) throw new TypeError('value for model must implement Dunno.Core.IModel')
+        if (!(value instanceof Dunno.Core.IModel) && value !== null) throw new TypeError('value for model must implement Dunno.Core.IModel')
+
+        if (value == null || value == undefined) {
+          this.value = ''
+          this.disabled = true
+          this._model = null
+          return
+        }
 
         if (this._model) {
           this._model.save((err, res) => {
@@ -257,6 +275,22 @@
             return this.set('title', title)
           }
           this.save()
+        })
+      }
+
+      destroy (callback) {
+        this.store.get('notes', (err, notes) => {
+          if (!err) {
+            if (!notes) notes = NoteApp.NOTES_STORE_LAYOUT
+            notes.keys = notes.keys.filter(key => key != this.id)
+            if (notes.values.hasOwnProperty(this.id)) delete notes.values[this.id]
+            this.store.set('notes', notes, (err, res) => {
+              if (!err) return this.emit('destroyed'), callback(err, res)
+              else return callback(err)
+            })
+          } else {
+            return callback(err)
+          }
         })
       }
 
