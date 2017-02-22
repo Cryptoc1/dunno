@@ -8,3 +8,5 @@ A List is a sub-class of Array, to provide additional functionality, and a more 
 + `.each(callback: Function => (item: Object, index: Integer))` : Iterates over the list's items
 + `.insert(index: Integer, item: Object) -> Integer` : Inserts `item` into the list at index, `index`, returning the new length of the list
 + `static .isList(object: Object) -> Boolean` : Returns whether `object` is a List
++ `.item(index: Integer) -> Object` : Get the item at `index`
++ `.remove(index: Integer) -> Object` : Deletes the item at `index`, returning that item
