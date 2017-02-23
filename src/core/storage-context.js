@@ -24,22 +24,11 @@
       }
 
       clear (callback) {
-        if (!callback) callback = () => {
-        }
-        setTimeout(() => {
-          this.store.clear(callback)
-        }, 0)
+        return this.store.clear(callback)
       }
 
       get (key, callback) {
-        if (!callback) callback = () => {
-        }
-        setTimeout(() => {
-          this.store.get(this.keyize(key), (err, value) => {
-            if (err) return callback(err)
-            callback(null, JSON.parse(value))
-          })
-        }, 0)
+        return this.store.get(this.keyize(key))
       }
 
       // parse a storage key to the internal representation
@@ -51,12 +40,8 @@
         return this._prefix + '.' + this.name + '.'
       }
 
-      set (key, value, callback) {
-        if (!callback) callback = () => {
-        }
-        setTimeout(() => {
-          this.store.set(this.keyize(key), JSON.stringify(value), callback)
-        }, 0)
+      set (key, value) {
+        return this.store.set(this.keyize(key), JSON.stringify(value))
       }
   }
 })()
@@ -69,15 +54,15 @@
     class {
       // constructor() {}
 
-      clear (callback) {
+      clear () {
         throw new Error('Not Implemented')
       }
 
-      get (key, callback) {
+      get (key) {
         throw new Error('Not Implemented')
       }
 
-      set (key, value, callback) {
+      set (key, value) {
         throw new Error('Not Implemented')
       }
   }
@@ -96,107 +81,95 @@
         this.storeName = 'kvp'
       }
 
-      get (key, callback) {
-        var self = this
+      get (key) {
+        return new Promise((resolve, reject) => {
 
-        if (!callback) callback = function () {}
+          var open = this.open()
 
-        this.open((err, db) => {
-          if (err) return callback(err)
+          open.then(db => {
+            var transaction = db.transaction([this.storeName])
+            var store = transaction.objectStore(this.storeName)
+            var request = store.get(key)
 
-          var transaction = db.transaction([self.storeName])
-          var store = transaction.objectStore(self.storeName)
-          var request = store.get(key)
+            request.onerror = err => {
+              return db.close(), reject(err)
+            }
 
-          request.onerror = (e) => {
-            callback(e)
-            db.close()
-          }
+            request.onsuccess = (e) => {
+              var value = (e.target.result) ? e.target.result.value : null
+              return db.close(), resolve(value)
+            }
+          })
 
-          request.onsuccess = (e) => {
-            var value = (e.target.result) ? e.target.result.value : null
-            callback(null, value)
-            db.close()
+          open.catch(err => reject(err))
+        })
+      }
+
+      open () {
+        return new Promise((resolve, reject) => {
+
+          var request = indexedDB.open(this.dbName, 2)
+
+          request.onerror = err => reject(err)
+
+          request.onsuccess = e => resolve(e.target.result)
+
+          request.onupgradeneeded = e => {
+            console.log('IndexStore: upgrade needed')
+            var store = e.currentTarget.result.createObjectStore('kvp', {
+              keyPath: 'key'
+            })
           }
         })
       }
 
-      open (callback) {
-        if (!callback) callback = function () {}
+      set (key, value) {
+        return new Promise((resolve, reject) => {
+          var open = this.open()
 
-        var request = indexedDB.open(this.dbName, 2)
+          open.then(db => {
+            var transaction = db.transaction([this.storeName], 'readwrite')
+            var store = transaction.objectStore(this.storeName)
 
-        request.onerror = (e) => {
-          console.log(e)
-          callback(e)
-        }
+            var get = store.get(key)
 
-        request.onsuccess = (e) => {
-          var db = e.target.result
-          callback(null, db)
-        }
+            get.onerror = err => {
+              return db.close(), reject(err)
+            }
 
-        request.onupgradeneeded = function (e) {
-          console.log('IndexStore: upgrade needed')
+            get.onsuccess = e => {
+              var entry = e.target.result
 
-          var store = e.currentTarget.result.createObjectStore('kvp', {
-            keyPath: 'key'
-          })
-        }
-      }
+              if (!entry) {
+                var add = store.add({
+                  key: key,
+                  value: value
+                })
 
-      set (key, value, callback) {
-        if (!callback) callback = () => {
-        }
+                add.onerror = err => {
+                  return db.close(), reject(err)
+                }
 
-        var self = this
+                add.onsuccess = e => {
+                  return db.close(), resolve(e.target.resolve)
+                }
+              } else {
+                entry.value = value
 
-        this.open((err, db) => {
-          if (err) return callback(err)
+                var put = store.put(entry)
 
-          var transaction = db.transaction([self.storeName], 'readwrite')
-          var store = transaction.objectStore(self.storeName)
+                put.onerror = err => {
+                  return db.close(), reject(err)
+                }
 
-          var get = store.get(key)
-
-          get.onerror = (e) => {
-            callback(e)
-            db.close()
-          }
-
-          get.onsuccess = (e) => {
-            var entry = e.target.result
-            if (!entry) {
-              var add = store.add({
-                key: key,
-                value: value
-              })
-
-              add.onerror = (e) => {
-                callback(e)
-                db.close()
-              }
-
-              add.onsuccess = (e) => {
-                callback(null, e.target.result)
-                db.close()
-              }
-            } else {
-              entry.value = value
-
-              var put = store.put(entry)
-
-              put.onerror = (e) => {
-                callback(e)
-                db.close()
-              }
-
-              put.onsuccess = (e) => {
-                callback(null, e.target.result)
-                db.close()
+                put.onsuccess = e => {
+                  return db.close(), resolve(e.target.result)
+                }
               }
             }
-          }
+          })
+
+          open.catch(err => reject(err))
         })
       }
 
@@ -215,23 +188,24 @@
         super()
       }
 
-      get (key, callback) {
-        if (!callback) callback = () => {
-        }
-
-        setTimeout(() => {
-          return callback(st.getItem(key))
-        }, 0)
+      get (key) {
+        return new Promise(function (resolve, reject) {
+          try {
+            return resolve(st.getItem(key))
+          } catch (err) {
+            return reject(err)
+          }
+        })
       }
 
-      set (key, value, callback) {
-        if (!callback) callback = () => {
-        }
-
-        setTimeout(() => {
-          st.setItem(key, value)
-          return callback()
-        }, 0)
+      set (key, value) {
+        return new Promise(function (resolve, reject) {
+          try {
+            return st.setItem(key, value), resolve(key)
+          } catch (err) {
+            return reject(err)
+          }
+        })
       }
   }
 })()
