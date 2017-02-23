@@ -145,7 +145,7 @@ Enjoy!
 
 ;((undefined) => {
 
-  class Editor extends HTMLDivElement {
+  class Editor extends Dunno.UI.BaseView {
     createdCallback () {
       this.style.width = '600px'
       this.style.height = '200px'
