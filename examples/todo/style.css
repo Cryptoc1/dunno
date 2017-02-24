@@ -16,7 +16,7 @@ html, body {
     height: 100%;
     transition: all .4s;
     overflow: hidden;
-    background-color: #FAFAFA;
+    background-color: rgba(210, 210, 210, .45);
 }
 
 body {
@@ -29,8 +29,20 @@ body {
     overflow-y: hidden;
 }
 
+#primary-region {
+    width: 90%;
+    max-width: 600px;
+    height: 100%;
+    overflow: auto;
+    margin: 0 auto;
+
+    background-color: #FDFDFD;
+
+    /*background: rgba(100, 100, 100, .5);*/
+}
+
 header {
-    height: 40%;
+    height: 35%;
     padding: 8pt;
     text-align: center;
 }
@@ -46,12 +58,28 @@ header #title {
 header #catchline {
     letter-spacing: 1.175pt;
     word-spacing: 2pt;
+    font-style: italic;
+    margin-top: 20pt;
 }
 
-#primary-region {
-    width: 40%;
-    height: 100%;
-    overflow: auto;
-    margin: 0 auto;
-    /*background: rgba(100, 100, 100, .5);*/
+#primary-region #items todo-list-item {
+  border-top: solid 2px rgba(210, 210, 210, .6);
+
+  width: 100%;
+  border-radius: 1px;
+}
+
+#primary-region #items todo-list-item action-item#complete-btn {
+  padding: 3%;
+  font-size: 18pt;
+  opacity: .8;
+  transition: background .3s;
+}
+
+#primary-region #items todo-list-item action-item#complete-btn:hover {
+  background-color: rgba(210, 210, 210, .6);
+}
+
+#primary-region #items todo-list-item todo-item-title {
+  padding-left: 12pt;
 }

@@ -76,12 +76,18 @@
       initShadowDOM () {
         var self = this
 
-        this.shadow = this.createShadowRoot()
-        var s = this.shadow.style = document.createElement('style')
-        s.append(document.createTextNode(''))
-        s.append(document.createTextNode(':host { display: block; }'))
-        this.shadow.append(s)
+        this.createShadowRoot()
+        this.shadow = this.shadowRoot
         this.shadow.append(document.createElement('content'))
+        var s = document.createElement('style')
+        this.shadow.append(s)
+        s.setAttribute('scope', 'shadow-stylesheet')
+        s.append(document.createTextNode(''))
+
+        this.shadow.stylesheet = new Dunno.UI.ShadowStyleSheet(this)
+        this.shadowStyle = this.shadow.stylesheet.rules
+
+        this.shadowStyle.display = 'block'
       }
 
       on (e, cb) {
@@ -110,6 +116,20 @@
             })
           }
         }, 0)
+      }
+
+      set template (name) {
+        if (!!this.innerHTML) console.warn('Replacing existing elements')
+        this.innerHTML = ''
+        this.append(Dunno.UI._templates[name].cloneNode(true))
+      }
+
+      get text () {
+        return this.textContent
+      }
+
+      set text (value) {
+        return this.textContent = '' + value + ''
       }
   }
 

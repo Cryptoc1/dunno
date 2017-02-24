@@ -98,8 +98,25 @@
           value: value
         }), this._title.text = value
     }
+
+    // Nested Namespaces
+    static get Helpers() {
+      if (!this._Helpers) this._Helpers = {}
+      return this._Helpers
+    }
+
+    static get Models () {
+      if (!this._Models) this._Models = {}
+      return this._Models
+    }
+
+    static get UI () {
+      if (!this._UI) this._UI = {}
+      return this._UI
+    }
   }
 
+  // Application.Helpers = {}
   Application.Models = {}
   Application.UI = {}
 

@@ -7,12 +7,19 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
     <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script> -->
+
+    <link href="templates/header.hbs" rel="import" name="header" scope="dunno-template">
+    <!-- <link href="templates/todo-item.hbs" rel="import" name="todo-item" scope="dunno-template"> -->
 </head>
 
 <body>
     <dunno>
         <!-- Dunno src -->
         <script src="../../src/dunno.js"></script>
+        <script src="../../src/ui.js"></script>
+
         <!-- Dunno.Core -->
         <script src="../../src/core/events.js"></script>
         <script src="../../src/core/storage-context.js"></script>
@@ -21,6 +28,7 @@
         <script src="../../src/core/model.js"></script>
 
         <!-- Dunno.UI -->
+        <script src="../../src/ui/shadow-stylesheet.js"></script>
         <script src="../../src/ui/base-view.js"></script>
         <script src="../../src/ui/master-view.js"></script>
         <script src="../../src/ui/region-view.js"></script>
@@ -28,7 +36,11 @@
         <script src="../../src/ui/text-view.js"></script>
         <script src="../../src/application.js"></script>
 
+        <!-- Custom -->
         <script src="todo.js"></script>
+        <script src="ui/action-bar.js"></script>
+        <script src="ui/todo-list.js"></script>
+
         <script>
             var app = window.app = new Todo()
 

@@ -4,7 +4,7 @@
     class extends Dunno.UI.BaseView {
       constructor (options = {}) {
         super(options)
-        this.items = new Dunno.Core.List()
+        this._items = new Dunno.Core.List()
       }
 
       add (item) {
@@ -14,6 +14,15 @@
         })
         this.append(item)
         return index
+      }
+
+      get items () {
+        return this._items
+      }
+
+      set items (value) {
+        if (!Dunno.Core.List.isList(value)) throw new TypeError('value must be of type Dunno.Core.List')
+        this._items = value
       }
 
       remove (index) {
@@ -35,6 +44,7 @@
         var s = this.items.filter(child => child.selected)
         return s[0]
       }
+
   }
 
   window.customElements.define('list-view', Dunno.UI.ListView)
