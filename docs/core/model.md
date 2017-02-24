@@ -15,5 +15,8 @@ This interface defines methods that Models should implement.
 ### `Dunno.Core.Model(attributes: Object)` extends `Dunno.Core.IModel`
 This is a generic definition of `Dunno.Core.IModel` that supports attribute getting/setting and cloning, but does not support methods that would require a storage context (e.g. `.destroy()`, `.save()`, `.sync()`)
 
+#### Methods
++ `static .guid() -> String` : Generates a UUID string
+
 #### Events
 + `change` : Emitted when an attribute is changed via `.set()`
