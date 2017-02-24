@@ -91,7 +91,12 @@
     }
 
     set title (value) {
-      this._title.text = value
+      var value = '' + value + ''
+      return this.emit('change', {
+          attribute: 'title',
+          oldValue: this._title.text,
+          value: value
+        }), this._title.text = value
     }
   }
 

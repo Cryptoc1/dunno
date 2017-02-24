@@ -3,8 +3,9 @@
 <html>
 
 <head>
-    <!-- <link href="style.css" rel="stylesheet"> -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
@@ -27,25 +28,9 @@
         <script src="../../src/ui/text-view.js"></script>
         <script src="../../src/application.js"></script>
 
-        <!-- <script src="notes.js"></script> -->
+        <script src="todo.js"></script>
         <script>
-
-            class TodoApp extends Dunno.Application {
-              constructor(options = {}) {
-                super(options)
-
-
-                this.store.get('test').then(value => {
-                  this.store.set('test', 'Hello world!').then(e => {
-                    this.store.get('test').then(value => {
-                      console.log(value)
-                    })
-                  })
-                })
-              }
-            }
-
-            var app = window.app = new TodoApp()
+            var app = window.app = new Todo()
 
             window.onload = e => {
                 app.render()

@@ -1,11 +1,9 @@
 ;((undefined) => {
 
   Dunno.UI.RegionView =
-    class extends HTMLElement {
+    class extends Dunno.UI.BaseView {
       constructor(options = {}) {
-        super()
-
-        this.id = options.id
+        super(options)
       }
   }
 
