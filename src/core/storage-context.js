@@ -28,7 +28,12 @@
       }
 
       get (key, callback) {
-        return this.store.get(this.keyize(key))
+        return new Promise((resolve, reject) => {
+          var req = this.store.get(this.keyize(key))
+
+          req.then(res => resolve(JSON.parse(res)))
+          req.catch(err => reject(err))
+        })
       }
 
       // parse a storage key to the internal representation

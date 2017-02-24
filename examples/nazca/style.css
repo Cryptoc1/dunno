@@ -59,7 +59,7 @@ body.nighttime help-box#help-box {
     height: 100%;
 }
 
-text-area#editor {
+#editor {
     font-family: 'Cutive Mono', sans-serif;
     font-weight: 700;
     font-size: 14pt;
