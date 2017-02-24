@@ -39,14 +39,10 @@
       })
       deleteAction.on('click', e => {
         var selected = this.notesList.selected
-        if (selected && selected.model) selected.model.destroy((err, res) => {
-            if (!err) {
-              this.editor.model = null
-              selected.once('disconnected', e => {
-                this.notesList.select(0)
-              })
-              selected.remove()
-            }
+        if (selected && selected.model) selected.model.destroy().then(res => {
+            this.editor.model = null
+            selected.once('disconnected', e => this.notesList.select(0))
+            selected.remove()
           })
       })
       actionBar.add(deleteAction)
@@ -85,17 +81,13 @@
     }
 
     main () {
-      this.store.get('notes', (err, notes) => {
-        if (!err) {
-          if (!notes) notes = NoteApp.NOTES_STORE_LAYOUT
+      this.store.get('notes').then(notes => {
+        if (!notes) notes = NoteApp.NOTES_STORE_LAYOUT
 
-          notes.keys.map(id => {
-            var note = new NoteApp.Models.Note(notes.values[id], this.store)
-            this.newNote(note)
-          })
-        } else {
-          console.error('error reading the StorageContext', err)
-        }
+        notes.keys.map(id => {
+          var note = new NoteApp.Models.Note(notes.values[id], this.store)
+          this.newNote(note)
+        })
       })
     }
 
@@ -179,7 +171,7 @@
         }
 
         if (this._model) {
-          this._model.save((err, res) => {
+          this._model.save().then(res => {
             this.value = value.get('text')
             this._model = value
           })
@@ -278,50 +270,55 @@
         })
       }
 
-      destroy (callback) {
-        this.store.get('notes', (err, notes) => {
-          if (!err) {
+      destroy () {
+        return new Promise((resolve, reject) => {
+
+          var get = this.store.get('notes')
+
+          get.then(notes => {
             if (!notes) notes = NoteApp.NOTES_STORE_LAYOUT
             notes.keys = notes.keys.filter(key => key != this.id)
             if (notes.values.hasOwnProperty(this.id)) delete notes.values[this.id]
-            this.store.set('notes', notes, (err, res) => {
-              if (!err) return this.emit('destroyed'), callback(err, res)
-              else return callback(err)
+
+            var set = this.store.set('notes', notes)
+
+            set.then(res => {
+              return this.emit('destroyed'), resolve(res)
             })
-          } else {
-            return callback(err)
-          }
+
+            set.catch(err => reject(err))
+          })
+
+          get.catch(err => reject(err))
         })
       }
 
-      save (callback) {
-        // create
-        if (!this.get('id')) {
-          this.id = NoteApp.Models.Note.guid()
-          this.set('id', this.id)
-        }
+      save () {
+        return new Promise((resolve, reject) => {
+          // assign an ID
+          if (!this.get('id')) this.set('id', this.id = Dunno.Core.Model.guid())
 
-        this.attributes.updated = Date.now()
+          this.attributes.updated = Date.now()
 
-        this.store.get('notes', (err, notes) => {
-          if (!err) {
+          var get = this.store.get('notes')
+
+          get.then(notes => {
             if (!notes) notes = NoteApp.NOTES_STORE_LAYOUT
 
             if (!notes.keys.includes(this.id)) notes.keys.push(this.id)
             notes.values[this.id] = this.attributes
 
-            return this.store.set('notes', notes, callback)
-          } else {
-            return callback(err)
-          }
-        })
-      }
+            var set = this.store.set('notes', notes)
 
-      static guid () {
-        function s4 () {
-          return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
-        }
-        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4()
+            set.then(res => {
+              return this.emit('saved'), resolve(res)
+            })
+
+            set.catch(err => reject(err))
+          })
+
+          get.catch(err => reject(err))
+        })
       }
   }
 })()

@@ -19,7 +19,7 @@ class TutorialApp extends Dunno.Application {
 
     var self = this
 
-    this.view.appendChild(this.editor = new EditorView())
+    this.view.append(this.editor = new TutorialApp.UI.EditorView())
 
     this.on('ctrl+shift+h', (e) => {
       e.preventDefault()
@@ -70,14 +70,9 @@ In Dunno, "Views" are just ES6 Custom elements (classes that extend `HTMLElement
 // we use a IIFE for cleaner scoping when using document.registerElement to "export the view"
 ;((undefined) => {
 
-  class EditorView extends HTMLDivElement {
-    constructor() {
-      super()
-    }
-
-    createdCallback() {
-      this.contentEditable = true
-      this.value = "Hello World!"
+  TutorialApp.UI.EditorView = class extends Dunno.UI.TextView {
+    constructor(options = {}) {
+      super(options)
     }
 
     hide() {
@@ -110,14 +105,13 @@ In Dunno, "Views" are just ES6 Custom elements (classes that extend `HTMLElement
     }
   }
 
-  // "export" the element registered to our view class
-  window.EditorView = document.registerElement('editor-view', EditorView)
+  window.customElements.define('editor-view', TutorialApp.UI.EditorView)
 })()
 ```
 
 You can find more information about ES6 and custom elements on [MDN](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Custom_Elements/Custom_Elements_with_Classes)
 
-In Dunno, all subviews are added to a master view to be rendered in the DOM. This master view is really just another custom element that's registered within `Dunno`. To add subviews to the master view, you simply append them like you would in good 'ol fashioned JavaScript, `this.view.appendChild(new EditorView())`.
+In Dunno, all subviews are added to a master view to be rendered in the DOM. This master view is really just another custom element that's registered within `Dunno`. To add subviews to the master view, you simply append them like you would in good 'ol fashioned JavaScript, `this.view.append(new TutorialApp.UI.EditorView())`.
 
 ### `Dunno.Application` and Events
 

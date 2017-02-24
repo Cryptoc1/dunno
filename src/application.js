@@ -35,6 +35,8 @@
         el.style.display = 'none'
       })
 
+      this.bindEvents()
+
       // styling
       /*document.body.style.width = '100%'
       document.body.style.margin = '0'
@@ -51,12 +53,11 @@
       // window title
       this._title = document.head.querySelector('title') || document.head.appendChild(document.createElement('title'))
       if (this.title === '') this.title = this.constructor.name
-
-      this.bindEvents()
     }
 
     bindEvents () {
-      window.addEventListener('keydown', e => this.emit('keydown'))
+      window.addEventListener('keydown', e => this.emit('keydown', e))
+      window.addEventListener('keydown', e => this.onKeydown(e))
       window.addEventListener('beforeunload', e => {
         var r = this.close(e)
         if (r) return e.returnValue = true

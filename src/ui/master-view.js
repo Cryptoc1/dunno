@@ -1,12 +1,21 @@
 ;((undefined) => {
 
-  class MasterView extends HTMLDivElement {
-    createdCallback () {
-      this.id = 'master-view'
-      // this.className = 'master-view view'
-      this.style.width = '100%'
-    }
+  Dunno.UI.MasterView =
+    class extends Dunno.UI.BaseView {
+      constructor (options = {}) {
+        super(options)
+
+        this.id = 'master-view'
+
+        this.shadow.style.append(document.createTextNode(`
+          :host {
+            width: 100%;
+            display: block;
+            margin: 0;
+            padding: 0;
+          }`))
+      }
   }
 
-  window.Dunno.UI.MasterView = document.registerElement('master-view', MasterView)
+  window.customElements.define('master-view', Dunno.UI.MasterView)
 })()
